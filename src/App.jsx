@@ -34,7 +34,7 @@ function App() {
   element={
     <PrivateRoutes>
       <DashboardLayout title="Flash Cards">
-        <Flashcard />
+        <FlashCard />
       </DashboardLayout>
     </PrivateRoutes>
   }
