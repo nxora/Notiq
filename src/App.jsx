@@ -5,7 +5,7 @@ import PrivateRoutes from "./components/PrivateRoutes.jsx";
 import DashboardLayout from "./components/DashboardLayout.jsx";
 import Home from "./pages/Home.jsx";
  import Notes from "./pages/Notes";
-import Flashcard from "./pages/Flashcard";
+import FlashCard from "./pages/FlashCard.jsx";
 import Quiz from "./pages/Quiz";
 import Settings from "./pages/Settings";
 import IllustrationSlide from "./components/IllustrationSlide.jsx";
