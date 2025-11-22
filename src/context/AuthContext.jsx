@@ -15,14 +15,15 @@ export const AuthProvider = ({ children }) => {
       console.log("Auth state changed → user:", currentUser);
 
       if (!currentUser) {
-        // Try restoring cached profile
+        // restore from localStorage
         const cachedProfile = localStorage.getItem("cachedProfile");
         if (cachedProfile) {
-          setProfile(JSON.parse(cachedProfile));
-          setUser({ uid: JSON.parse(cachedProfile).id });
+          const parsed = JSON.parse(cachedProfile);
+          setProfile(parsed);
+          setUser({ uid: parsed.id, email: parsed.email });
         } else {
-          setUser(null);
           setProfile(null);
+          setUser(null);
         }
         setLoading(false);
         return;
@@ -52,18 +53,21 @@ export const AuthProvider = ({ children }) => {
         }
 
         setProfile(profileData);
+
+        // persist profile in localStorage
         localStorage.setItem("cachedProfile", JSON.stringify(profileData));
+        localStorage.setItem("notiq_user", JSON.stringify({ ...currentUser, profile: profileData }));
       } catch (err) {
         console.warn("Firestore offline or error, using cached profile", err);
 
         const cachedProfile = localStorage.getItem("cachedProfile");
         if (cachedProfile) {
-          setProfile(JSON.parse(cachedProfile));
+          const parsed = JSON.parse(cachedProfile);
+          setProfile(parsed);
+          setUser({ uid: parsed.id, email: parsed.email });
         } else {
-          setProfile({
-            id: currentUser.uid,
-            email: currentUser.email,
-          });
+          setProfile({ id: currentUser.uid, email: currentUser.email });
+          setUser(currentUser);
         }
       } finally {
         setLoading(false);
@@ -78,11 +82,11 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     setProfile(null);
     localStorage.removeItem("cachedProfile");
-    localStorage.removeItem("notiq_user"); // clear session too
+    localStorage.removeItem("notiq_user");
   };
 
   return (
-    <AuthContext.Provider value={{ user, profile, setUser, loading, logout }}>
+    <AuthContext.Provider value={{ user, profile, setUser, setProfile, loading, logout }}>
       {children}
     </AuthContext.Provider>
   );

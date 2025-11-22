@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export default function Sidebar() {
-  const { user } = useAuth();
+  const { profile } = useAuth();
   const [collapsed, setCollapsed] = useState(false);
   const [openSection, setOpenSection] = useState("pages");
 
@@ -104,23 +104,26 @@ export default function Sidebar() {
 
       {/* User */}
       {/* User */}
+
+
 <div className="mt-auto px-5 py-6 border-t flex items-center gap-3">
   {!collapsed && (
     <>
       <div className="w-10 h-10 bg-gray-100 border rounded-md flex items-center justify-center text-gray-700 overflow-hidden">
-        {user?.photoURL ? (
-          <img src={user.photoURL} alt="avatar" className="w-full h-full object-cover" />
+        {profile?.avatar ? (
+          <img src={profile.avatar} alt="avatar" className="w-full h-full object-cover" />
         ) : (
-          <span>{user?.displayName ? user.displayName.charAt(0) : user?.email?.charAt(0).toUpperCase()}</span>
+          <span>{profile?.displayName ? profile.displayName.charAt(0) : profile?.email?.charAt(0).toUpperCase()}</span>
         )}
       </div>
       <div>
-        <p className="text-sm font-medium">{user?.displayName || user?.email}</p>
+        <p className="text-sm font-medium">{profile?.displayName || profile?.email}</p>
         <p className="text-xs text-gray-500">Online</p>
       </div>
     </>
   )}
 </div>
+
 
     </div>
   );
