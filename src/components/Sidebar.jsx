@@ -31,8 +31,7 @@ export default function Sidebar() {
     }
   ];
 
-  if (loading) return <div> Loading </div>
-  return (
+   return (
     <div
       className={`h-full border-r bg-white transition-all duration-300 flex flex-col ${
         collapsed ? "w-16" : "w-64"
