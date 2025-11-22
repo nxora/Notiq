@@ -1,3 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.tiptap {
+  min-height: 400px;
+  outline: none;
+  padding: 1rem 0;
+}
+
+.tiptap p {
+  margin: 0.5rem 0;
+}
+
+.tiptap:focus {
+  outline: none;
+}
