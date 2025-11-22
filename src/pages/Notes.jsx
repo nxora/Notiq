@@ -5,10 +5,9 @@ import { createNote, subscribeToNotes, updateNote, deleteNote } from "../lib/not
 import { useAuth } from "../context/AuthContext";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { enableIndexedDbPersistence } from "firebase/firestore";
+import { db } from "../firebase/firebaseConfig";
 
-enableIndexedDbPersistence(db).catch(err => console.warn("persistence error", err));
-
+ 
 /* Native debounce (no dependency) */
 function debounce(fn, wait = 500) {
   let t;
