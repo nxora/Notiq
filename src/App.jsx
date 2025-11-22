@@ -8,7 +8,7 @@ import Home from "./pages/Home.jsx";
 import FlashCard from "./pages/FlashCard.jsx";
 import Quiz from "./pages/Quiz";
 import Settings from "./pages/Settings";
-import IllustrationSlide from "./components/IllustrationSlide.jsx";
+import Default from "./components/Default.jsx";
 
 function App() {
   return (
@@ -16,7 +16,7 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/" element={<Home />} />
       <Route path="/register" element={<Register/>} />
-       <Route path="/dashboard" element={<PrivateRoutes> <DashboardLayout title="Home"><IllustrationSlide/> </DashboardLayout> </PrivateRoutes>} />
+       <Route path="/dashboard" element={<PrivateRoutes> <DashboardLayout title="Home"><Default/></DashboardLayout> </PrivateRoutes>} />
 
 <Route
   path="/notes"
