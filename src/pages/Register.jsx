@@ -4,13 +4,14 @@ import logo from './../assets/logo.png'
 import IllustrationSlide from '../components/IllustrationSlide'
 
 function Register() {
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
-    const [error, setError] = useState("")
+    const [email, setEmail] = useState("");  
+    const [message, setMessage] = useState("");
+     const [error, setError] = useState("")
 
     const handleRegister = async (e) => {
         e.preventDefault()
         setError("")
+        setMessage("")
 
         try {
            const result = await registerUser(email)
@@ -44,6 +45,7 @@ function Register() {
                             Sign Up
                         </button>
 
+                            {message && <p>{message}</p>}
                         <a href="/login" className="text-sm text-center mt-2 link">
                             Already have an account? Login
                         </a>
