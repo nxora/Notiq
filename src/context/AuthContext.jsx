@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth, db } from "../firebase/firebaseConfig";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 
@@ -12,10 +12,10 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (currentUser) => {
-      console.log("Auth state changed → user is:", currentUser);
+      console.log("Auth state changed → user:", currentUser);
 
       if (!currentUser) {
-        // Try restore cached profile for offline
+        // Try restoring cached profile
         const cachedProfile = localStorage.getItem("cachedProfile");
         if (cachedProfile) {
           setProfile(JSON.parse(cachedProfile));
@@ -28,10 +28,8 @@ export const AuthProvider = ({ children }) => {
         return;
       }
 
-      // User is authenticated
       setUser(currentUser);
 
-      // Try fetching profile from Firestore
       try {
         const ref = doc(db, "users", currentUser.uid);
         const snap = await getDoc(ref);
@@ -41,11 +39,12 @@ export const AuthProvider = ({ children }) => {
           profileData = {
             id: currentUser.uid,
             email: currentUser.email,
-            createdAt: Date.now(),
-            avatar: null,
+            displayName: currentUser.displayName || "",
+            avatar: currentUser.photoURL || null,
             bio: "",
             streaks: 0,
             friends: [],
+            createdAt: Date.now(),
           };
           await setDoc(ref, profileData);
         } else {
@@ -57,12 +56,10 @@ export const AuthProvider = ({ children }) => {
       } catch (err) {
         console.warn("Firestore offline or error, using cached profile", err);
 
-        // Fallback to cached profile
         const cachedProfile = localStorage.getItem("cachedProfile");
         if (cachedProfile) {
           setProfile(JSON.parse(cachedProfile));
         } else {
-          // If no cached profile, create a minimal one
           setProfile({
             id: currentUser.uid,
             email: currentUser.email,
@@ -77,14 +74,15 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const logout = async () => {
-    await auth.signOut();
+    await signOut(auth);
     setUser(null);
     setProfile(null);
     localStorage.removeItem("cachedProfile");
+    localStorage.removeItem("notiq_user"); // clear session too
   };
 
   return (
-    <AuthContext.Provider value={{ user, profile, loading, logout }}>
+    <AuthContext.Provider value={{ user, profile, setUser, loading, logout }}>
       {children}
     </AuthContext.Provider>
   );

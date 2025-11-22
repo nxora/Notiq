@@ -1,67 +1,100 @@
-// src/firebase/auth.js
 import {
   sendSignInLinkToEmail,
-  isSignInWithEmailLink,
-  signInWithEmailLink,
   signInWithPopup,
+  sendPasswordResetEmail,
 } from "firebase/auth";
-
 import { auth, db } from "./firebaseConfig";
-import { doc, setDoc, serverTimestamp } from "firebase/firestore";
+import {
+  doc,
+  setDoc,
+  serverTimestamp,
+  collection,
+  query,
+  where,
+  getDocs,
+} from "firebase/firestore";
 
-// --------------------- ACTION CODE SETTINGS ---------------------
-export const actionCodeSettings = {
+const actionCodeSettings = {
   url: "http://localhost:5173/login",
   handleCodeInApp: true,
 };
 
-// --------------------- CREATE / UPDATE USER IN FIRESTORE ---------------------
-export async function createUserProfile(user) {
-  if (!user) return;
+// -------------------- REGISTER --------------------
+export const registerUser = async (email) => {
+  await sendSignInLinkToEmail(auth, email, actionCodeSettings);
+  localStorage.setItem("emailForSignIn", email);
+  return { needsVerification: true };
+};
 
-  const userRef = doc(db, "users", user.uid);
+// -------------------- LOGIN EMAIL-ONLY --------------------
+export const loginUser = async (email) => {
+  if (!email) throw new Error("Email is required.");
+
+  // check cached session first
+  const cached = localStorage.getItem("notiq_user");
+  if (cached) {
+    const user = JSON.parse(cached);
+    if (user.email === email) return user;
+  }
+
+  const q = query(collection(db, "users"), where("email", "==", email));
+  const snapshot = await getDocs(q);
+
+  if (snapshot.empty) throw new Error("Email not registered.");
+
+  const userDoc = snapshot.docs[0].data();
+
+  // save session locally
+  localStorage.setItem("notiq_user", JSON.stringify(userDoc));
+  return userDoc;
+};
+
+// -------------------- PROVIDER LOGIN --------------------
+export const loginWithProvider = async (provider) => {
+  const result = await signInWithPopup(auth, provider);
+  await createUserDocument(result.user);
+
+  const userDoc = {
+    email: result.user.email,
+    displayName: result.user.displayName || "",
+    photoURL: result.user.photoURL || "",
+    uid: result.user.uid,
+  };
+  localStorage.setItem("notiq_user", JSON.stringify(userDoc));
+
+  return result.user;
+};
+
+// -------------------- CREATE/UPDATE USER DOC --------------------
+export const createUserDocument = async (user) => {
+  if (!user) return;
+  const ref = doc(db, "users", user.uid);
 
   await setDoc(
-    userRef,
+    ref,
     {
       email: user.email,
       displayName: user.displayName || "",
       photoURL: user.photoURL || "",
-      lastLogin: serverTimestamp(),
       createdAt: serverTimestamp(),
+      lastLogin: serverTimestamp(),
     },
     { merge: true }
   );
-}
+};
 
-// --------------------- SEND LOGIN EMAIL LINK ---------------------
-export async function sendMagicLink(email) {
-  await sendSignInLinkToEmail(auth, email, actionCodeSettings);
-  localStorage.setItem("emailForSignIn", email);
-}
+// -------------------- RESET PASSWORD --------------------
+export const resetPassword = async (email) => sendPasswordResetEmail(auth, email);
 
-// --------------------- COMPLETE LOGIN WITH EMAIL LINK ---------------------
-export async function completeEmailLinkLogin() {
-  if (isSignInWithEmailLink(auth, window.location.href)) {
-    let email = localStorage.getItem("emailForSignIn");
+// -------------------- LOGOUT --------------------
+export const logoutUser = () => {
+  localStorage.removeItem("notiq_user");
+  localStorage.removeItem("cachedProfile");
+};
 
-    if (!email) {
-      email = window.prompt("Enter your email");
-    }
-
-    const cred = await signInWithEmailLink(auth, email, window.location.href);
-
-    await createUserProfile(cred.user);
-
-    localStorage.removeItem("emailForSignIn");
-    return true;
-  }
-  return false;
-}
-
-// --------------------- PROVIDER LOGINS ---------------------
-export async function loginWithProvider(provider) {
-  const result = await signInWithPopup(auth, provider);
-  await createUserProfile(result.user);
-  return result.user;
-}
+// -------------------- GET CACHED USER --------------------
+export const getCachedUser = () => {
+  const cached = localStorage.getItem("notiq_user");
+  if (!cached) return null;
+  return JSON.parse(cached);
+};
