@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { onAuthStateChanged, signOut, setPersistence, browserLocalPersistence } from "firebase/auth";
 import { auth, db } from "../firebase/firebaseConfig";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 
@@ -10,71 +10,102 @@ export const AuthProvider = ({ children }) => {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 
+useEffect(() => {
+    console.log("Current profile →", profile);
+}, [profile]);
+
+
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, async (currentUser) => {
-      console.log("Auth state changed → user:", currentUser);
-
-      if (!currentUser) {
-        // restore from localStorage
-        const cachedProfile = localStorage.getItem("cachedProfile");
-        if (cachedProfile) {
-          const parsed = JSON.parse(cachedProfile);
-          setProfile(parsed);
-          setUser({ uid: parsed.id, email: parsed.email });
-        } else {
-          setProfile(null);
-          setUser(null);
-        }
-        setLoading(false);
-        return;
-      }
-
-      setUser(currentUser);
-
+    const initAuth = async () => {
       try {
-        const ref = doc(db, "users", currentUser.uid);
-        const snap = await getDoc(ref);
-
-        let profileData;
-        if (!snap.exists()) {
-          profileData = {
-            id: currentUser.uid,
-            email: currentUser.email,
-            displayName: currentUser.displayName || "",
-            avatar: currentUser.photoURL || null,
-            bio: "",
-            streaks: 0,
-            friends: [],
-            createdAt: Date.now(),
-          };
-          await setDoc(ref, profileData);
-        } else {
-          profileData = snap.data();
-        }
-
-        setProfile(profileData);
-
-        // persist profile in localStorage
-        localStorage.setItem("cachedProfile", JSON.stringify(profileData));
-        localStorage.setItem("notiq_user", JSON.stringify({ ...currentUser, profile: profileData }));
+        // ensure Firebase persists sessions
+        await setPersistence(auth, browserLocalPersistence);
       } catch (err) {
-        console.warn("Firestore offline or error, using cached profile", err);
-
-        const cachedProfile = localStorage.getItem("cachedProfile");
-        if (cachedProfile) {
-          const parsed = JSON.parse(cachedProfile);
-          setProfile(parsed);
-          setUser({ uid: parsed.id, email: parsed.email });
-        } else {
-          setProfile({ id: currentUser.uid, email: currentUser.email });
-          setUser(currentUser);
-        }
-      } finally {
-        setLoading(false);
+        console.error("Failed to set Firebase persistence:", err);
       }
-    });
 
-    return () => unsub();
+      const unsub = onAuthStateChanged(auth, async (currentUser) => {
+        
+        if (!currentUser) {
+  const cachedProfile = localStorage.getItem("cachedProfile");
+  if (cachedProfile) {
+    const parsed = JSON.parse(cachedProfile);
+    setProfile(parsed);
+    setUser({ uid: parsed.id, email: parsed.email });
+  } else {
+    setProfile(null);
+    setUser(null);
+  }
+  setLoading(false);
+  return;
+}
+
+// fetch from Firestore...
+setProfile(profileData); // set profile first
+setUser(currentUser);    // then set user
+
+        console.log("Auth state changed → currentUser:", currentUser);
+
+        try {
+          const ref = doc(db, "users", currentUser.uid);
+          const snap = await getDoc(ref);
+
+          let profileData;
+          if (!snap.exists()) {
+            profileData = {
+              id: currentUser.uid,
+              email: currentUser.email,
+              displayName: currentUser.displayName || currentUser.email.split("@")[0],
+              avatar: currentUser.photoURL || null,
+              bio: "",
+              streaks: 0,
+              friends: [],
+              createdAt: Date.now(),
+            };
+            await setDoc(ref, profileData);
+          } else {
+            const data = snap.data();
+            profileData = {
+              ...data,
+              displayName: currentUser.displayName || data.displayName || currentUser.email.split("@")[0],
+              avatar: currentUser.photoURL || data.avatar || null,
+            };
+
+            // update missing fields in Firestore
+            const updates = {};
+            if (!data.displayName && currentUser.displayName) updates.displayName = currentUser.displayName;
+            if (!data.avatar && currentUser.photoURL) updates.avatar = currentUser.photoURL;
+            if (Object.keys(updates).length > 0) await setDoc(ref, { ...data, ...updates });
+          }
+
+          setProfile(profileData);
+          localStorage.setItem("cachedProfile", JSON.stringify(profileData));
+          localStorage.setItem("notiq_user", JSON.stringify({ ...currentUser, profile: profileData }));
+        } catch (err) {
+          console.warn("Error fetching profile, using cache", err);
+          const cachedProfile = localStorage.getItem("cachedProfile");
+          if (cachedProfile) {
+            const parsed = JSON.parse(cachedProfile);
+            setProfile(parsed);
+            setUser({ uid: parsed.id, email: parsed.email });
+          } else {
+            setProfile({
+              id: currentUser.uid,
+              email: currentUser.email,
+              displayName: currentUser.email.split("@")[0],
+              avatar: null,
+            });
+            setUser(currentUser);
+          }
+        } finally {
+          setLoading(false);
+        }
+      });
+
+      return unsub;
+    };
+
+    initAuth();
   }, []);
 
   const logout = async () => {
