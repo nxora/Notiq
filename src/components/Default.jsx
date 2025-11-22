@@ -6,14 +6,15 @@ export default function DashboardWelcome() {
 
   return (
     <div className="space-y-6">
-      <motion.h1
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="text-4xl font-bold tracking-tight"
-      >
-        Welcome back, {user?.email?.split("@")[0]} 👋
-      </motion.h1>
+<motion.h1
+  initial={{ opacity: 0, y: -20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.6 }}
+  className="text-4xl font-bold tracking-tight"
+>
+  Welcome back, {user?.displayName || user?.email?.split("@")[0]} 👋
+</motion.h1>
+
 
       <motion.p
         initial={{ opacity: 0 }}

@@ -103,19 +103,25 @@ export default function Sidebar() {
       </div>
 
       {/* User */}
-      <div className="mt-auto px-5 py-6 border-t flex items-center gap-3">
-        {!collapsed && (
-          <>
-            <div className="w-10 h-10 bg-gray-100 border rounded-md flex items-center justify-center text-gray-700">
-              {user?.email?.charAt(0).toUpperCase()}
-            </div>
-            <div>
-              <p className="text-sm font-medium">{user?.email}</p>
-              <p className="text-xs text-gray-500">Online</p>
-            </div>
-          </>
+      {/* User */}
+<div className="mt-auto px-5 py-6 border-t flex items-center gap-3">
+  {!collapsed && (
+    <>
+      <div className="w-10 h-10 bg-gray-100 border rounded-md flex items-center justify-center text-gray-700 overflow-hidden">
+        {user?.photoURL ? (
+          <img src={user.photoURL} alt="avatar" className="w-full h-full object-cover" />
+        ) : (
+          <span>{user?.displayName ? user.displayName.charAt(0) : user?.email?.charAt(0).toUpperCase()}</span>
         )}
       </div>
+      <div>
+        <p className="text-sm font-medium">{user?.displayName || user?.email}</p>
+        <p className="text-xs text-gray-500">Online</p>
+      </div>
+    </>
+  )}
+</div>
+
     </div>
   );
 }
