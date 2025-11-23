@@ -30,7 +30,7 @@ export default function FlashcardList({
 
       <button
         onClick={onNew}
-        className="w-full flex items-center justify-center gap-2 bg-indigo-700 text-white py-2.5 rounded-md text-sm hover:bg-indigo-600 transition"
+        className="w-10/12 mx-4 flex items-center justify-center gap-2 bg-gray-900 text-white py-2.5 rounded-md text-sm hover:bg-indigo-600 transition"
       >
         <FiPlus size={16} /> New Flashcard
       </button>

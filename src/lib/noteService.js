@@ -12,12 +12,10 @@ import {
   onSnapshot,
 } from "firebase/firestore";
 
-/* --------------------------- COLLECTION REFERENCE --------------------------- */
-
+ 
 const notesCollectionRef = (userId) => collection(db, "users", userId, "notes");
 
-/* ------------------------------- CRUD LOGIC -------------------------------- */
-
+ 
 export async function createNote(user) {
   const col = notesCollectionRef(user.uid);
   const docRef = await addDoc(col, {
@@ -61,8 +59,7 @@ export async function deleteNote(user, noteId, soft = true) {
     : deleteDoc(ref);
 }
 
-/* ---------------------------- LOCAL DRAFT CACHE ---------------------------- */
-
+ 
 export const Draft = {
   key(id) {
     return `note_draft_${id}`;
@@ -85,8 +82,7 @@ export const Draft = {
   },
 };
 
-/* ----------------------------- DEBOUNCE UTIL ------------------------------ */
-
+ 
 export function makeDebouncer(fn, delay = 600) {
   let t;
   return (...args) => {
@@ -95,8 +91,7 @@ export function makeDebouncer(fn, delay = 600) {
   };
 }
 
-/* ------------------------------ SEARCH UTILS ------------------------------ */
-
+ 
 export function stripHtml(html = "") {
   return html.replace(/<[^>]+>/g, "");
 }

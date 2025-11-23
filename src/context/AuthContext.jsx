@@ -18,8 +18,7 @@ useEffect(() => {
   useEffect(() => {
     const initAuth = async () => {
       try {
-        // ensure Firebase persists sessions
-        await setPersistence(auth, browserLocalPersistence);
+         await setPersistence(auth, browserLocalPersistence);
       } catch (err) {
         console.error("Failed to set Firebase persistence:", err);
       }
@@ -41,8 +40,8 @@ useEffect(() => {
 }
 
 // fetch from Firestore...
-setProfile(profileData); // set profile first
-setUser(currentUser);    // then set user
+setProfile(profileData);  
+setUser(currentUser);    
 
         console.log("Auth state changed → currentUser:", currentUser);
 
@@ -71,8 +70,7 @@ setUser(currentUser);    // then set user
               avatar: currentUser.photoURL || data.avatar || null,
             };
 
-            // update missing fields in Firestore
-            const updates = {};
+             const updates = {};
             if (!data.displayName && currentUser.displayName) updates.displayName = currentUser.displayName;
             if (!data.avatar && currentUser.photoURL) updates.avatar = currentUser.photoURL;
             if (Object.keys(updates).length > 0) await setDoc(ref, { ...data, ...updates });

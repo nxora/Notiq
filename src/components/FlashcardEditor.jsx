@@ -16,8 +16,7 @@ export default function FlashcardEditor({ card, onDeleted, onUpdated }) {
     setTagsInput((card?.tags || []).join(", "));
   }, [card?.id]);
 
-  // Debounced update function
-  const debouncedSave = useRef(
+   const debouncedSave = useRef(
     makeDebouncer(async (id, payload) => {
       if (!user || !id) return;
       try {
@@ -31,8 +30,7 @@ export default function FlashcardEditor({ card, onDeleted, onUpdated }) {
     }, 650)
   );
 
-  // Draft autosave locally whenever local state changes
-  useEffect(() => {
+   useEffect(() => {
     if (!card) return;
     FlashDraft.save(card.id, { front, back, tags: tagsInput });
     debouncedSave.current(card.id, { front, back, tags: tagsInput.split(",").map((s) => s.trim()).filter(Boolean) });
