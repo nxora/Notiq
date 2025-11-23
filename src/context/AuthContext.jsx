@@ -18,8 +18,7 @@ useEffect(() => {
   useEffect(() => {
     const initAuth = async () => {
       try {
-        // ensure Firebase persists sessions
-        await setPersistence(auth, browserLocalPersistence);
+         await setPersistence(auth, browserLocalPersistence);
       } catch (err) {
         console.error("Failed to set Firebase persistence:", err);
       }

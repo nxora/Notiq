@@ -22,18 +22,14 @@ export default function Notes() {
   const [selectedNote, setSelectedNote] = useState(null);
   const [notes, setNotes] = useState([]);
   const [search, setSearch] = useState("");
-
-  /* ----------------------------- TIPTAP INSTANCE ---------------------------- */
-
+ 
   const editor = useEditor({
     extensions: [StarterKit, Highlight],
     content: "<p></p>",
     editable: true,
     onUpdate: ({ editor }) => handleContentUpdate(editor.getHTML()),
   });
-
-  /* ----------------------- CONTENT SAVE (DEBOUNCED) ------------------------ */
-
+ 
   const saveContent = useCallback(
     (id, html) => {
       if (!user || !id) return;
@@ -56,9 +52,7 @@ export default function Notes() {
 
     debouncedContentSave.current(selectedNote.id, html);
   };
-
-  /* ------------------------- TITLE SAVE (DEBOUNCED) ------------------------ */
-
+ 
   const saveTitle = useCallback(
     (id, title) => {
       if (!user || !id) return;
@@ -81,9 +75,7 @@ export default function Notes() {
     });
 
     debouncedTitleSave.current(selectedNote.id, title);
-  };
-
-  /* ---------------------------- REALTIME NOTES ---------------------------- */
+  }; 
 
   useEffect(() => {
     if (!user) return;
@@ -96,9 +88,7 @@ export default function Notes() {
       });
     });
   }, [user]);
-
-  /* ------------------------ LOAD SELECTED NOTE DATA ------------------------ */
-
+ 
   useEffect(() => {
     if (!selectedNote || !editor) {
       editor?.commands.setContent("<p></p>");
@@ -111,10 +101,7 @@ export default function Notes() {
     if (cached.content && cached.content !== selectedNote.content) {
       editor.commands.setContent(cached.content);
     }
-  }, [selectedNote, editor]);
-
-  /* ----------------------------- NEW + DELETE ------------------------------ */
-
+  }, [selectedNote, editor]); 
   const handleNewNote = async () => {
     if (!user) return;
     const newNote = await createNote(user);
@@ -126,9 +113,7 @@ export default function Notes() {
     Draft.remove(id);
     setSelectedNote(null);
   };
-
-  /* -------------------------------- RENDER -------------------------------- */
-
+ 
   if (loading) return <div>Loading...</div>;
   if (!user) return <div>You aren't logged in</div>;
 
@@ -137,8 +122,7 @@ export default function Notes() {
   return (
     <div className="flex h-full">
 
-      {/* SIDEBAR */}
-      <div className="w-72 border-r bg-white/60 backdrop-blur-md flex flex-col">
+       <div className="w-72 border-r bg-white/60 backdrop-blur-md flex flex-col">
         <div className="px-4 py-4 flex items-center justify-between">
           <h2 className="text-lg font-semibold tracking-tight">Notes</h2>
           <button className="w-8 h-8 flex items-center justify-center rounded-md hover:bg-gray-100">
@@ -160,7 +144,7 @@ export default function Notes() {
 
         <button
           onClick={handleNewNote}
-          className="w-full flex items-center justify-center gap-2 bg-gray-900 text-white py-2.5 rounded-md text-sm hover:bg-gray-800"
+          className="w-10/12 mx-6 flex items-center justify-center gap-2 bg-gray-900 text-white py-2.5 rounded-md text-sm hover:bg-gray-800"
         >
           <FiPlus size={16} /> New Note
         </button>
