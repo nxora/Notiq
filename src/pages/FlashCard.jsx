@@ -24,8 +24,7 @@ export default function FlashCard () {
     if (!user) return;
     const unsub = subscribeToFlashcards(user, (list) => {
       setCards(list);
-      // keep selected in sync if it exists
-      setSelected((prev) => (prev ? list.find((c) => c.id === prev.id) || null : prev));
+       setSelected((prev) => (prev ? list.find((c) => c.id === prev.id) || null : prev));
     });
     return () => unsub && unsub();
   }, [user]);
@@ -42,8 +41,7 @@ export default function FlashCard () {
   };
 
   const openStudy = (opts = {}) => {
-    // default: study all un-mastered or all
-    const list = opts.unmastered ? cards.filter((c) => !c.mastered) : cards;
+     const list = opts.unmastered ? cards.filter((c) => !c.mastered) : cards;
     setStudyCards(list);
     setStudyOpen(true);
   };

@@ -16,8 +16,7 @@ export default function FlashcardEditor({ card, onDeleted, onUpdated }) {
     setTagsInput((card?.tags || []).join(", "));
   }, [card?.id]);
 
-  // Debounced update function
-  const debouncedSave = useRef(
+   const debouncedSave = useRef(
     makeDebouncer(async (id, payload) => {
       if (!user || !id) return;
       try {
