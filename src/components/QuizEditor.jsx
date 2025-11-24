@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { QuizDraft, makeDebouncer, updateQuiz, deleteQuiz } from "../lib/quizService";
+import { Draft, makeDebouncer, updateQuiz, deleteQuiz } from "../lib/quizService";
 import { useAuth } from "../context/AuthContext";
 
 export default function QuizEditor({ quiz, onDeleted, onUpdated }) {
@@ -20,7 +20,7 @@ export default function QuizEditor({ quiz, onDeleted, onUpdated }) {
   const save = () => {
     if (!quiz) return;
     const data = { title, questions };
-    QuizDraft.save(quiz.id, data);
+    Draft.save(quiz.id, data);
     debouncedSave.current(quiz.id, data);
     onUpdated?.(data);
   };
@@ -28,7 +28,7 @@ export default function QuizEditor({ quiz, onDeleted, onUpdated }) {
   const handleDelete = async () => {
     if (!quiz || !user) return;
     await deleteQuiz(user, quiz.id, true);
-    QuizDraft.remove(quiz.id);
+    Draft.remove(quiz.id);
     onDeleted?.(quiz.id);
   };
 
