@@ -1,16 +1,72 @@
-# React + Vite
+### <img style='align-items: center; width: 100px; display: flex; flex-direction: row; justify-content: center;' src="./src/assets/logo.png"> 
+# Notiq 
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+[![Version](https://img.shields.io/badge/version-1.0.0-blue)](https://github.com/yourusername/notiq) 
+[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/yourusername/notiq/actions)
+[![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-orange)](https://github.com/yourusername/notiq/issues)
+[![Stars](https://img.shields.io/github/stars/yourusername/notiq?style=social)](https://github.com/nxora/Notiq/Notiq)
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Overview
 
-## React Compiler
+**Notiq** is a modern, lightweight, and highly customizable notification manager designed to keep you organized and productive. Whether you’re tracking tasks, reminders, or alerts from multiple sources, Notiq brings everything into one sleek interface.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+With a focus on speed, reliability, and user experience, Notiq helps you stay on top of your day without distraction.
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Features ✨
+
+- **Multi-source notifications** – Aggregate alerts from apps, email, and IoT devices.
+- **Custom Reminders** – Set one-time or recurring reminders with ease.
+- **Priority Management** – Categorize notifications by importance.
+- **Offline Support** – Never miss a notification even without an internet connection.
+- **Cross-Platform** – Works seamlessly on Windows, macOS, and Linux.
+
+---
+
+## Screenshots 🖼️
+
+![Dashboard](./src/assets/preview.png) 
+
+---
+
+## Installation 💻
+
+### From Source
+```bash
+git clone https://github.com/yourusername/notiq.git
+cd notiq
+npm install
+npm run dev
+
+# Start Notiq
+npm run dev
+
+ 
+Contributing 🤝
+
+Contributions are welcome! Please read the Contributing Guide
+ before submitting a PR.
+
+Fork the repository
+
+Create your feature branch: git checkout -b feature/MyFeature
+
+Commit your changes: git commit -m 'Add some feature'
+
+Push to the branch: git push origin feature/MyFeature
+
+Open a Pull Request
+
+License 📄
+
+This project is licensed under the MIT License
+.
+
+Contact ✉️
+
+Created by Nexora
+ – feel free to reach out!
