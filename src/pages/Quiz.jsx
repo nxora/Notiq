@@ -3,12 +3,14 @@ import QuizList from "../components/QuizList";
 import QuizEditor from "../components/QuizEditor";
 import StudyQuiz from "../components/StudyQuiz";
 import { useAuth } from "../context/AuthContext";
+import {  
+  generateQuizFromNoteContent, 
+} from "../firebase/quiz";
 import {
   createQuiz,
-  subscribeToQuizzes,
-  generateQuizFromNoteContent,
+  subscribeToQuizzes, 
   filterQuizzes,
-} from "../firebase/quiz";
+} from "../lib/quizService";
 
 export default function Quiz({ noteContent }) {
   const { user, loading } = useAuth();
