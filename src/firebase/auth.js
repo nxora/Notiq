@@ -15,7 +15,7 @@ import {
 } from "firebase/firestore";
 
 const actionCodeSettings = {
-  url: "http://localhost:5173/login",
+  url: "https://notiq-jjca20qm8-daveora.vercel.app/login",
   handleCodeInApp: true,
 };
 
