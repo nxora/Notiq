@@ -6,8 +6,7 @@ const nlp = require("compromise");
 admin.initializeApp();
 const db = admin.firestore();
 
-/* ------------------------- HELPER: GENERATE QUIZ ------------------------- */
-function generateQuizFromNoteContent(noteContent) {
+export function generateQuizFromNoteContent(noteContent) {
   const doc = nlp(noteContent || "");
   const sentences = doc.sentences().out("array").slice(0, 10); // first 10 sentences
   const questions = sentences.map((s) => {
@@ -28,8 +27,7 @@ function shuffleArray(array) {
   return arr;
 }
 
-/* ------------------ FIRESTORE TRIGGER: NOTES ------------------ */
-exports.autoGenerateQuiz = functions.firestore
+ exports.autoGenerateQuiz = functions.firestore
   .document("users/{userId}/notes/{noteId}")
   .onWrite(async (change, context) => {
     const { userId, noteId } = context.params;
