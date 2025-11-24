@@ -8,7 +8,7 @@ import {
   subscribeToQuizzes,
   generateQuizFromNoteContent,
   filterQuizzes,
-} from "../lib/quizService";
+} from "../firebase/quiz";
 
 export default function Quiz({ noteContent }) {
   const { user, loading } = useAuth();
