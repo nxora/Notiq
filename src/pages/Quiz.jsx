@@ -5,7 +5,7 @@ import StudyQuiz from "../components/StudyQuiz";
 import { useAuth } from "../context/AuthContext";
 import {  
   generateQuizFromNoteContent, 
-} from "../firebase/quiz";
+} from "../../.firebase/quiz";
 import {
   createQuiz,
   subscribeToQuizzes, 
