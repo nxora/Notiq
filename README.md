@@ -70,6 +70,4 @@ This project is licensed under the MIT License
 .
 
 Contact ✉️ [Daveora](https://github.com/davex-ai)
-
-Created by Nexora
  – feel free to reach out!
