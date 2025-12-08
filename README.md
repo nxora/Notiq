@@ -37,7 +37,7 @@ With a focus on speed, reliability, and user experience, Notiq helps you stay on
 
 ### From Source
 ```bash
-git clone https://github.com/yourusername/notiq.git
+git clone https://github.com/dave-ai/notiq.git
 cd notiq
 npm install
 npm run dev
